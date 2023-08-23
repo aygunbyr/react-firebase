@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
   Box,
@@ -10,7 +11,22 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+import { changeEmail, changePassword } from '../redux/authSlice';
+
 const SignIn = () => {
+  const dispatch = useDispatch();
+
+  const email = useSelector((state) => state.auth.email);
+  const password = useSelector((state) => state.auth.password);
+
+  const handleEmailChange = (e) => {
+    dispatch(changeEmail(e.currentTarget.value));
+  };
+
+  const handlePasswordChange = (e) => {
+    dispatch(changePassword(e.currentTarget.value));
+  };
+
   return (
     <>
       <CssBaseline />
@@ -29,6 +45,8 @@ const SignIn = () => {
             required
             autoComplete="email"
             autoFocus
+            onChange={handleEmailChange}
+            value={email}
           />
           <TextField
             fullWidth
@@ -36,6 +54,8 @@ const SignIn = () => {
             label="Password"
             required
             type="password"
+            onChange={handlePasswordChange}
+            value={password}
           />
           <Button fullWidth sx={{ mt: 2 }} type="submit" variant="contained">
             Sign In
