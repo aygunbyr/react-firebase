@@ -11,7 +11,12 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-import { changeName, changeEmail, changePassword } from '../redux/authSlice';
+import {
+  changeName,
+  changeEmail,
+  changePassword,
+  register,
+} from '../redux/authSlice';
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -19,6 +24,9 @@ const SignUp = () => {
   const name = useSelector((state) => state.auth.name);
   const email = useSelector((state) => state.auth.email);
   const password = useSelector((state) => state.auth.password);
+
+  const error = useSelector((state) => state.auth.error);
+  const isLoading = useSelector((state) => state.auth.isLoading);
 
   const handleNameChange = (e) => {
     dispatch(changeName(e.currentTarget.value));
@@ -32,11 +40,16 @@ const SignUp = () => {
     dispatch(changePassword(e.currentTarget.value));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(register({ name, email, password }));
+  };
+
   return (
     <>
       <CssBaseline />
       <Container maxWidth="xs">
-        <Box component="form" sx={{ mt: 4 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4 }}>
           <Avatar sx={{ mx: 'auto', bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -44,6 +57,12 @@ const SignUp = () => {
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
             Sign Up
           </Typography>
+
+          {error && (
+            <Typography sx={{ color: 'error.main', textAlign: 'center' }}>
+              {error}
+            </Typography>
+          )}
 
           <TextField
             fullWidth
@@ -76,8 +95,14 @@ const SignUp = () => {
             value={password}
           />
 
-          <Button fullWidth sx={{ mt: 2 }} type="submit" variant="contained">
-            Sign Up
+          <Button
+            disabled={isLoading}
+            fullWidth
+            sx={{ mt: 2 }}
+            type="submit"
+            variant="contained"
+          >
+            {isLoading ? 'Loading...' : 'Sign Up'}
           </Button>
 
           <Box

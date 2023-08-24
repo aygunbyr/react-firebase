@@ -11,13 +11,16 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-import { changeEmail, changePassword } from '../redux/authSlice';
+import { changeEmail, changePassword, logIn } from '../redux/authSlice';
 
 const SignIn = () => {
   const dispatch = useDispatch();
 
   const email = useSelector((state) => state.auth.email);
   const password = useSelector((state) => state.auth.password);
+
+  const error = useSelector((state) => state.auth.error);
+  const isLoading = useSelector((state) => state.auth.isLoading);
 
   const handleEmailChange = (e) => {
     dispatch(changeEmail(e.currentTarget.value));
@@ -27,17 +30,30 @@ const SignIn = () => {
     dispatch(changePassword(e.currentTarget.value));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(logIn({ email, password }));
+  };
+
   return (
     <>
       <CssBaseline />
       <Container maxWidth="xs">
-        <Box component="form" sx={{ mt: 4 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4 }}>
           <Avatar sx={{ mx: 'auto', bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography variant="h5" sx={{ textAlign: 'center' }}>
             Sign In
           </Typography>
+
+          {error && (
+            <Typography sx={{ color: 'error.main', textAlign: 'center' }}>
+              {error}
+            </Typography>
+          )}
+
           <TextField
             fullWidth
             margin="normal"
@@ -48,6 +64,7 @@ const SignIn = () => {
             onChange={handleEmailChange}
             value={email}
           />
+
           <TextField
             fullWidth
             margin="normal"
@@ -57,8 +74,15 @@ const SignIn = () => {
             onChange={handlePasswordChange}
             value={password}
           />
-          <Button fullWidth sx={{ mt: 2 }} type="submit" variant="contained">
-            Sign In
+
+          <Button
+            disabled={isLoading}
+            fullWidth
+            sx={{ mt: 2 }}
+            type="submit"
+            variant="contained"
+          >
+            {isLoading ? 'Loading...' : 'Sign In'}
           </Button>
 
           <Box
