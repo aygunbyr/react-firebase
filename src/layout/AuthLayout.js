@@ -1,4 +1,7 @@
 import { Outlet, Navigate } from 'react-router-dom';
+import { Avatar, Container } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
 import { useIsLoggedIn } from '../config/hooks';
 
 const AuthLayout = () => {
@@ -10,7 +13,14 @@ const AuthLayout = () => {
     return <Navigate replace to="/" />;
   }
 
-  return <Outlet />;
+  return (
+    <Container maxWidth="xs" sx={{ pt: 4 }}>
+      <Avatar sx={{ mx: 'auto', bgcolor: 'secondary.main' }}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Outlet />
+    </Container>
+  );
 };
 
 export default AuthLayout;

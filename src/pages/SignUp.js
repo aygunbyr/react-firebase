@@ -1,15 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  CssBaseline,
-  Link,
-  TextField,
-  Typography,
-} from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Button, Link, TextField, Typography } from '@mui/material';
 
 import {
   changeName,
@@ -46,78 +37,71 @@ const SignUp = () => {
   };
 
   return (
-    <>
-      <CssBaseline />
-      <Container maxWidth="xs">
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4 }}>
-          <Avatar sx={{ mx: 'auto', bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+    <Box component="form" onSubmit={handleSubmit}>
+      <Typography variant="h5" sx={{ textAlign: 'center' }}>
+        Sign Up
+      </Typography>
 
-          <Typography variant="h5" sx={{ textAlign: 'center' }}>
-            Sign Up
-          </Typography>
+      {error && (
+        <Typography sx={{ color: 'error.main', textAlign: 'center' }}>
+          {error}
+        </Typography>
+      )}
 
-          {error && (
-            <Typography sx={{ color: 'error.main', textAlign: 'center' }}>
-              {error}
-            </Typography>
-          )}
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Full Name"
+        required
+        autoComplete="name"
+        autoFocus
+        onChange={handleNameChange}
+        value={name}
+      />
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Full Name"
-            required
-            autoComplete="name"
-            autoFocus
-            onChange={handleNameChange}
-            value={name}
-          />
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Email Address"
+        required
+        autoComplete="email"
+        onChange={handleEmailChange}
+        value={email}
+      />
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Email Address"
-            required
-            autoComplete="email"
-            onChange={handleEmailChange}
-            value={email}
-          />
+      <TextField
+        fullWidth
+        margin="normal"
+        label="Password"
+        required
+        type="password"
+        onChange={handlePasswordChange}
+        value={password}
+      />
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Password"
-            required
-            type="password"
-            onChange={handlePasswordChange}
-            value={password}
-          />
+      <Button
+        disabled={isLoading}
+        fullWidth
+        sx={{ mt: 2 }}
+        type="submit"
+        variant="contained"
+      >
+        {isLoading ? 'Loading...' : 'Sign Up'}
+      </Button>
 
-          <Button
-            disabled={isLoading}
-            fullWidth
-            sx={{ mt: 2 }}
-            type="submit"
-            variant="contained"
-          >
-            {isLoading ? 'Loading...' : 'Sign Up'}
-          </Button>
-
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              mt: 4,
-            }}
-          >
-            <Link>Already have an account? Sign in</Link>
-          </Box>
-        </Box>
-      </Container>
-    </>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          mt: 4,
+        }}
+      >
+        <Link component={RouterLink} to="/sign-in">
+          Already have an account? Sign in
+        </Link>
+      </Box>
+    </Box>
   );
 };
 
