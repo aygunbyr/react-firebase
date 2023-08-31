@@ -7,11 +7,23 @@ export const useIsLoggedIn = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      console.log(user);
+    // Return => Unsubscribe when component unmount
+    return onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
     });
   }, []);
 
   return isLoggedIn;
+};
+
+export const useCurrentUser = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+  }, []);
+
+  return user;
 };
