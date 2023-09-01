@@ -43,7 +43,7 @@ const Layout = () => {
 
   return (
     <>
-      <AppBar position="apsolute">
+      <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Home

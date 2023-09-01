@@ -1,14 +1,18 @@
+import { useEffect, useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { getAuth } from 'firebase/auth';
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  updateCurrentUser,
-} from 'firebase/auth';
+  collection,
+  getFirestore,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  addDoc,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBHS8apSdWvAWuDO1JgxRSpwmyTkvlwjLc',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'products-1239d.firebaseapp.com',
   projectId: 'products-1239d',
   storageBucket: 'products-1239d.appspot.com',
@@ -21,11 +25,47 @@ const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 export const auth = getAuth(app);
 
-export const signUp = async (name, email, password) => {
-  await createUserWithEmailAndPassword(auth, email, password);
-  await updateCurrentUser(auth, { displayName: name });
+export const db = getFirestore(app);
+
+const productsRef = collection(db, 'products');
+
+export const useProductsListener = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(productsRef, (snapshot) => {
+      setProducts(
+        snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            createdAt: data.createdAt?.toDate(),
+          };
+        })
+      );
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  return products;
 };
 
-export const signIn = async (email, password) => {
-  await signInWithEmailAndPassword(auth, email, password);
+export const deleteProduct = (id) => {
+  deleteDoc(doc(db, 'products', id));
+};
+
+export const addProduct = () => {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+
+  addDoc(productsRef, {
+    name: 'iPhone',
+    description: 'Lorem ipsum',
+    price: 2002,
+    uid,
+  });
 };
